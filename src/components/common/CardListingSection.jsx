@@ -1,0 +1,255 @@
+"use client"
+
+import { useState } from "react"
+import { FaSearch, FaChevronDown } from "react-icons/fa"
+import Card from "./Card"
+
+const CardListingSection = () => {
+    const [searchTerm, setSearchTerm] = useState("")
+    const [selectedTag, setSelectedTag] = useState("All Characters")
+    const [isTagsOpen, setIsTagsOpen] = useState(false)
+    const [visibleCount, setVisibleCount] = useState(8) // State to track visible characters
+
+    const characters = [
+        {
+            id: 1,
+            name: "Goku",
+            gender: "Male",
+            image: "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+            powerLevel: "8,500+",
+            tags: ["Saiyan", "Z Fighter", "Hero"],
+            likes: 192,
+            imagesCount: 4,
+            images: [
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://wallpapers.com/images/hd/goku-in-ultra-instinct-form-dbz-jbv9wggf2wx9yp7i.jpg",
+                "https://staticg.sportskeeda.com/editor/2022/12/0f33c-16701663224265-1920.jpg",
+                "https://i.pinimg.com/originals/8a/7e/f7/8a7ef7d6c6b5d7b93a29642d1e6634fa.jpg"
+            ],
+        },
+        {
+            id: 2,
+            name: "Vegeta",
+            gender: "Male",
+            image: "https://images7.alphacoders.com/673/673499.jpg",
+            powerLevel: "8,000+",
+            tags: ["Saiyan", "Z Fighter", "Prince"],
+            likes: 187,
+            imagesCount: 4,
+            images: [
+                "https://images7.alphacoders.com/673/673499.jpg",
+                "https://wallpapers.com/images/hd/vegeta-final-flash-8k-dbz-qbb7keu32w25z9bb.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/vegeta.jpg",
+                "https://i.pinimg.com/originals/bb/98/f1/bb98f194efbbcf7f65df03ecb11d8c4c.jpg"
+            ],
+        },
+        {
+            id: 3,
+            name: "Gohan",
+            gender: "Male",
+            image: "https://c4.wallpaperflare.com/wallpaper/514/74/570/dragon-ball-dragon-ball-z-gohan-dragon-ball-super-saiyan-2-hd-wallpaper-preview.jpg",
+            powerLevel: "5,000+",
+            tags: ["Half-Saiyan", "Z Fighter", "Scholar"],
+            likes: 167,
+            imagesCount: 3,
+            images: [
+                "https://c4.wallpaperflare.com/wallpaper/514/74/570/dragon-ball-dragon-ball-z-gohan-dragon-ball-super-saiyan-2-hd-wallpaper-preview.jpg",
+                "https://wallpapers.com/images/featured/gohan-ultra-instinct-3pc5j6cg9vuzcg7k.jpg",
+                "https://www.animeexplained.com/wp-content/uploads/2023/02/Gohan-Beast-Transformation.jpg"
+            ],
+        },
+        {
+            id: 4,
+            name: "Piccolo",
+            gender: "Male",
+            image: "https://dragonball.guru/wp-content/uploads/2021/03/piccolo-scared.jpg",
+            powerLevel: "3,500+",
+            tags: ["Namekian", "Z Fighter", "Mentor"],
+            likes: 131,
+            imagesCount: 3,
+            images: [
+                "https://dragonball.guru/wp-content/uploads/2021/03/piccolo-scared.jpg",
+                "https://wallpapers.com/images/hd/piccolo-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/piccolo.jpg"
+            ],
+        },
+        {
+            id: 5,
+            name: "Trunks",
+            gender: "Male",
+            image: "https://c4.wallpaperflare.com/wallpaper/127/553/144/dragon-ball-z-trunks-character-blue-eyes-saiyan-wallpaper-preview.jpg",
+            powerLevel: "4,000+",
+            tags: ["Half-Saiyan", "Z Fighter", "Time Traveler"],
+            likes: 114,
+            imagesCount: 3,
+            images: [
+                "https://c4.wallpaperflare.com/wallpaper/127/553/144/dragon-ball-z-trunks-character-blue-eyes-saiyan-wallpaper-preview.jpg",
+                "https://wallpapers.com/images/hd/trunks-super-saiyan-2-dbz-8k-wallpaper-7g7w0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/trunks.jpg"
+            ],
+        },
+        {
+            id: 6,
+            name: "Bulma",
+            gender: "Female",
+            image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+            powerLevel: "Genius",
+            tags: ["Human", "Scientist", "Capsule Corp"],
+            likes: 137,
+            imagesCount: 3,
+            images: [
+                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+            ],
+        },
+        {
+            id: 7,
+            name: "Krillin",
+            gender: "Male",
+            image: "https://preview.redd.it/post-top-krillin-goes-back-to-the-buu-arc-how-well-does-he-v0-zdl8xc5ypmhb1.gif?format=png8&s=593c12de01ca66ce831a4878b9b521de5a0bce21",
+            powerLevel: "1,770+",
+            tags: ["Human", "Z Fighter", "Monk"],
+            likes: 92,
+            imagesCount: 3,
+            images: [
+                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+            ],
+        },
+        {
+            id: 8,
+            name: "Frieza",
+            gender: "Unknown",
+            image: "https://i1.sndcdn.com/avatars-000387329123-ikvouo-t500x500.jpg",
+            powerLevel: "530,000+",
+            tags: ["Villain", "Emperor", "Alien"],
+            likes: 103,
+            imagesCount: 3,
+            images: [
+                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+            ],
+        },
+        {
+            id: 9,
+            name: "Majin Buu",
+            gender: "Male",
+            image: "https://gamingbolt.com/wp-content/uploads/2024/09/Dragon-Ball-Sparking-ZERO_05_0-scaled.jpg",
+            powerLevel: "Very High",
+            tags: ["Villain", "Majin", "Monster"],
+            likes: 156,
+            imagesCount: 3,
+            images: [
+                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+            ],
+        },
+        {
+            id: 10,
+            name: "Cell",
+            gender: "Male",
+            image: "https://imgix.ranker.com/user_node_img/50088/1001749483/original/what_s-left-of-your-head-photo-u1?auto=format&q=60&fit=crop&fm=pjpg&dpr=2&w=355",
+            powerLevel: "Extremely High",
+            tags: ["Villain", "Android", "Cell Saga"],
+            likes: 123,
+            imagesCount: 3,
+            images: [
+                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
+                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
+                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+            ],
+        },
+    ];
+
+
+    const allTags = ["All Characters", "Saiyan", "Human", "Villain", "Z Fighter", "Alien"]
+
+    const filteredCharacters = characters.filter((character) => {
+        const matchesSearch = character.name.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesTag = selectedTag === "All Characters" || character.tags.includes(selectedTag)
+        return matchesSearch && matchesTag
+    })
+
+    const handleLoadMore = () => {
+        setVisibleCount(visibleCount + 8)
+    }
+
+    return (
+        <div className="bg-gray-900 text-white py-8 px-4 min-h-screen">
+            <div className="container mx-auto">
+                {/* Search and Filter Section */}
+                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                    <div className="relative flex-grow">
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <FaSearch className="absolute left-3 top-3 text-gray-500" />
+                    </div>
+
+                    <div className="relative">
+                        <button
+                            className="bg-blue-700 hover:bg-blue-600 text-white py-2 px-4 rounded-md flex items-center justify-between min-w-[200px]"
+                            onClick={() => setIsTagsOpen(!isTagsOpen)}
+                        >
+                            <span>{selectedTag}</span>
+                            <FaChevronDown className={`ml-2 transition-transform ${isTagsOpen ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {isTagsOpen && (
+                            <div className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg">
+                                {allTags.map((tag) => (
+                                    <div
+                                        key={tag}
+                                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                                        onClick={() => {
+                                            setSelectedTag(tag)
+                                            setIsTagsOpen(false)
+                                        }}
+                                    >
+                                        {tag}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Card Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {filteredCharacters.slice(0, visibleCount).map((character) => (
+                        <Card key={character.id} character={character} />
+                    ))}
+                </div>
+
+                {/* Load More Button */}
+                {filteredCharacters.length > visibleCount && (
+                    <div className="text-center mt-6">
+                        <button
+                            onClick={handleLoadMore}
+                            className="bg-blue-700 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                        >
+                            Load More
+                        </button>
+                    </div>
+                )}
+
+                <div className="text-center my-10">
+
+                    <h1 className="text-5xl font-semibold"> New content every day! </h1>
+
+                </div>
+
+            </div>
+        </div>
+    )
+}
+
+export default CardListingSection
