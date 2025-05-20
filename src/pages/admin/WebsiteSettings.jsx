@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
+import axios from "axios";
+import {BASE_URL} from "../../utils/apiURL";
 
 const WebsiteSettings = () => {
   const [settings, setSettings] = useState({
@@ -10,9 +12,23 @@ const WebsiteSettings = () => {
     description: "Welcome to my waifuscan page!",
     twitter: "",
     instagram: "",
-    facebook: "",
-    youtube: "",
+    patreon: "",
+    discord : "",
   });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/settings`);
+        setSettings(res.data);
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
 
   const handleTextChange = (e) => {
     const { name, value } = e.target;
@@ -22,19 +38,52 @@ const WebsiteSettings = () => {
   const handleImageUpload = (e, key) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSettings((prev) => ({ ...prev, [key]: imageUrl }));
+      setSettings((prev) => ({
+        ...prev,
+        [key]: file,
+      }));
     }
   };
+
 
   const handleRemoveImage = (key) => {
     setSettings((prev) => ({ ...prev, [key]: null }));
   };
 
-  const handleSave = () => {
-    console.log("Saved settings:", settings);
-    // TODO: Send to backend or save to localStorage/database
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+
+      // Append files only if they are File objects
+      if (settings.logo instanceof File) {
+        formData.append("logo", settings.logo);
+      }
+      if (settings.banner instanceof File) {
+        formData.append("banner", settings.banner);
+      }
+
+      // Append text fields
+      formData.append("profileName", settings.profileName);
+      formData.append("description", settings.description);
+      formData.append("twitter", settings.twitter);
+      formData.append("instagram", settings.instagram);
+      formData.append("patreon", settings.patreon);
+      formData.append("discord", settings.discord);
+
+      const res = await axios.put(`${BASE_URL}/settings`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Settings saved successfully!");
+      setSettings(res.data);
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Failed to save settings.");
+    }
   };
+
 
   return (
     <AdminLayout>
@@ -42,11 +91,21 @@ const WebsiteSettings = () => {
         <h1 className="text-2xl font-bold mb-6">Website Settings</h1>
 
         {/* Logo Upload */}
-        <div className="mb-6">
-          <label className="block font-medium mb-2">Site Logo</label>
-          {settings.logo ? (
-            <div className="relative inline-block">
-              <img src={settings.logo} alt="Logo" className="w-32 h-auto rounded border" />
+        {/* <div className="mb-6"> */}
+          {/* <label className="block font-medium mb-2">Site Logo</label> */}
+          {/* {settings.logo ? (
+            <div className="relative inline-block"> */}
+              {/* <img src={settings.logo} alt="Logo" className="w-32 h-auto rounded border" /> */}
+              {/* <img
+                src={
+                  settings.logo instanceof File
+                    ? URL.createObjectURL(settings.logo)
+                    : `http://localhost:8080${settings.logo}`
+                }
+                alt="Logo"
+                className="w-32 h-auto rounded border"
+              />
+
               <button
                 onClick={() => handleRemoveImage("logo")}
                 className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 text-xs rounded-full"
@@ -56,15 +115,24 @@ const WebsiteSettings = () => {
             </div>
           ) : (
             <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "logo")} />
-          )}
-        </div>
+          )} */}
+        {/* </div> */}
 
         {/* Banner Upload */}
         <div className="mb-6">
           <label className="block font-medium mb-2">Banner Image</label>
           {settings.banner ? (
             <div className="relative">
-              <img src={settings.banner} alt="Banner" className="w-full max-h-48 object-cover rounded border" />
+
+              <img
+                src={
+                  settings.banner instanceof File
+                    ? URL.createObjectURL(settings.banner)
+                    : `http://localhost:8080${settings.banner}`
+                }
+                alt="Banner" className="w-full max-h-48 object-cover rounded border"
+              />
+
               <button
                 onClick={() => handleRemoveImage("banner")}
                 className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs rounded-full"
@@ -78,7 +146,7 @@ const WebsiteSettings = () => {
         </div>
 
         {/* Profile Name */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block font-medium mb-1">Profile Name</label>
           <input
             type="text"
@@ -87,7 +155,7 @@ const WebsiteSettings = () => {
             onChange={handleTextChange}
             className="w-full border rounded px-3 py-2"
           />
-        </div>
+        </div> */}
 
         {/* Description */}
         <div className="mb-4">
@@ -127,11 +195,11 @@ const WebsiteSettings = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-1">Facebook</label>
+          <label className="block font-medium mb-1">Patreon</label>
           <input
             type="text"
-            name="facebook"
-            value={settings.facebook}
+            name="patreon"
+            value={settings.patreon}
             onChange={handleTextChange}
             className="w-full border rounded px-3 py-2"
             placeholder="https://facebook.com/yourprofile"
@@ -139,11 +207,11 @@ const WebsiteSettings = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block font-medium mb-1">YouTube</label>
+          <label className="block font-medium mb-1">Discord</label>
           <input
             type="text"
-            name="youtube"
-            value={settings.youtube}
+            name="discord"
+            value={settings.discord}
             onChange={handleTextChange}
             className="w-full border rounded px-3 py-2"
             placeholder="https://youtube.com/yourchannel"

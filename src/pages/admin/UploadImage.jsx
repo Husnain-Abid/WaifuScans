@@ -1,70 +1,107 @@
 "use client"
 
-import { useState } from "react"
-import { Upload, X } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Upload, X, Trash2 } from "lucide-react"
 import AdminLayout from "../../layouts/AdminLayout"
-
-// Mock characters with image count
-const mockCharacters = [
-  { id: 1, name: "Goku", imagesCount: 150 },
-  { id: 2, name: "Vegeta", imagesCount: 199 },
-  { id: 3, name: "Bulma", imagesCount: 50 },
-]
+import axios from "axios"
+import { BASE_URL, IMG_URL } from "../../utils/apiURL"
 
 const UploadImage = () => {
+  const [characters, setCharacters] = useState([])
   const [selectedCharacter, setSelectedCharacter] = useState(null)
   const [files, setFiles] = useState([])
   const [dragging, setDragging] = useState(false)
-
-  const handleCharacterChange = (e) => {
-    const selectedId = parseInt(e.target.value)
-    const character = mockCharacters.find(c => c.id === selectedId)
-    setSelectedCharacter(character)
-    setFiles([]) // Clear old uploads if character changes
-  }
+  const [existingImages, setExistingImages] = useState([])
 
   const maxImages = 200
   const currentCount = selectedCharacter?.imagesCount || 0
   const totalAfterUpload = currentCount + files.length
-
   const canUpload = selectedCharacter && totalAfterUpload <= maxImages
 
-  const handleDragOver = (e) => {
-    e.preventDefault()
-    setDragging(true)
+  const fetchCharacterImages = async (characterId) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/character-images/${characterId}`)
+      setExistingImages(res.data)
+    } catch (err) {
+      console.error("Failed to fetch character images:", err)
+    }
   }
 
-  const handleDragLeave = () => {
-    setDragging(false)
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setDragging(false)
-
-    const droppedFiles = Array.from(e.dataTransfer.files)
-    if (currentCount + files.length + droppedFiles.length > maxImages) return alert("200 image limit exceeded.")
-    setFiles(prev => [...prev, ...droppedFiles])
+  const handleCharacterChange = (e) => {
+    const selectedId = e.target.value
+    const character = characters.find(c => c._id === selectedId)
+    setSelectedCharacter(character)
+    setFiles([])
+    fetchCharacterImages(selectedId)
   }
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files)
-    if (currentCount + files.length + newFiles.length > maxImages) return alert("200 image limit exceeded.")
+    if (currentCount + files.length + newFiles.length > maxImages) {
+      alert("200 image limit exceeded.")
+      return
+    }
     setFiles(prev => [...prev, ...newFiles])
   }
 
-  const removeFile = (index) => {
-    const updatedFiles = [...files]
-    updatedFiles.splice(index, 1)
-    setFiles(updatedFiles)
+  const updateCharacterImageCount = (characterId, delta) => {
+    setCharacters(prev =>
+      prev.map(char =>
+        char._id === characterId
+          ? { ...char, imagesCount: Math.max(0, char.imagesCount + delta) }
+          : char
+      )
+    )
+    setSelectedCharacter(prev =>
+      prev && prev._id === characterId
+        ? { ...prev, imagesCount: Math.max(0, prev.imagesCount + delta) }
+        : prev
+    )
   }
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedCharacter) return alert("Please select a character.")
     if (totalAfterUpload > maxImages) return alert("Character cannot have more than 200 images.")
-    alert(`${files.length} images uploaded for ${selectedCharacter.name}. (Mock Upload)`)
-    setFiles([])
+
+    const formData = new FormData()
+    formData.append("characterId", selectedCharacter._id)
+    files.forEach(file => formData.append("images", file))
+
+    try {
+      const res = await axios.post(`${BASE_URL}/character-images`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      alert("Upload successful.")
+      setFiles([])
+      fetchCharacterImages(selectedCharacter._id)
+      updateCharacterImageCount(selectedCharacter._id, res.data.length)
+
+    } catch (err) {
+      console.error(err)
+      alert(err.response?.data?.error || "Upload failed.")
+    }
   }
+
+  const handleDeleteImage = async (imageId) => {
+    if (!window.confirm("Delete this image?")) return
+    try {
+      await axios.delete(`${BASE_URL}/character-images/${imageId}`)
+      fetchCharacterImages(selectedCharacter._id)
+updateCharacterImageCount(selectedCharacter._id, -1)
+    } catch (err) {
+      console.error(err)
+      alert("Failed to delete image.")
+    }
+  }
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/characters`)
+      .then(res => setCharacters(res.data))
+      .catch(err => {
+        console.error("Failed to fetch characters:", err)
+        alert("Failed to load characters")
+      })
+  }, [])
 
   return (
     <AdminLayout>
@@ -72,49 +109,45 @@ const UploadImage = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Upload Images</h1>
 
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6 space-y-4">
-          <div>
-            <label className="block mb-2 font-medium text-gray-700">Select Character:</label>
-            <select
-              className="border border-gray-300 px-3 py-2 rounded-md w-full"
-              onChange={handleCharacterChange}
-              value={selectedCharacter?.id || ""}
-            >
-              <option value="">-- Choose a Character --</option>
-              {mockCharacters.map((char) => (
-                <option key={char.id} value={char.id}>
-                  {char.name} ({char.imagesCount}/200 images)
-                </option>
-              ))}
-            </select>
-          </div>
+          <label className="block mb-2 font-medium text-gray-700">Select Character:</label>
+          <select
+            className="border border-gray-300 px-3 py-2 rounded-md w-full"
+            onChange={handleCharacterChange}
+            value={selectedCharacter?._id || ""}
+          >
+            <option value="">-- Choose a Character --</option>
+            {characters.map(char => (
+              <option key={char._id} value={char._id}>
+                {char.name} ({char.imagesCount}/200 images)
+              </option>
+            ))}
+          </select>
 
           {selectedCharacter && (
             <>
               <p className="text-sm text-gray-600">
-                Uploading to: <strong>{selectedCharacter.name}</strong> &middot; Current: {currentCount} images
+                Uploading to: <strong>{selectedCharacter.name}</strong> – {currentCount} images
               </p>
 
-              {currentCount >= maxImages && (
-                <p className="text-red-600 text-sm font-medium">
-                  This character already has 200 images. You can't upload more.
-                </p>
-              )}
-
               <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
-                  }`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50" : "border-gray-300"}`}
+                onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault(); setDragging(false)
+                  const dropped = Array.from(e.dataTransfer.files)
+                  if (currentCount + files.length + dropped.length > maxImages) {
+                    alert("200 image limit exceeded.")
+                    return
+                  }
+                  setFiles(prev => [...prev, ...dropped])
+                }}
               >
-                <div className="flex justify-center mb-4">
-                  <Upload className="h-12 w-12 text-gray-400" />
-                </div>
-                <p className="text-gray-700 mb-2">Drag & drop images here</p>
-                <p className="text-gray-500 text-sm mb-4">Supported: JPG, PNG, GIF (Max 5MB each)</p>
-                <label className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer">
-                  <span>Browse Files</span>
-                  <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileChange} />
+                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-600">Drag & drop images or browse</p>
+                <label className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer hover:bg-indigo-700">
+                  Browse Files
+                  <input type="file" multiple hidden accept="image/*" onChange={handleFileChange} />
                 </label>
               </div>
             </>
@@ -125,32 +158,45 @@ const UploadImage = () => {
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-medium text-gray-800 mb-4">Images to Upload ({files.length})</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {files.map((file, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={file.name}
-                    className="rounded-lg w-full h-32 object-cover"
-                  />
+              {files.map((file, idx) => (
+                <div key={idx} className="relative group">
+                  <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-32 object-cover rounded" />
                   <button
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
-                    onClick={() => removeFile(index)}
+                    className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100"
+                    onClick={() => setFiles(prev => prev.filter((_, i) => i !== idx))}
                   >
                     <X className="h-4 w-4" />
                   </button>
-                  <p className="mt-1 text-sm text-gray-500 truncate">{file.name}</p>
                 </div>
               ))}
             </div>
-
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 text-right">
               <button
-                disabled={!canUpload}
-                className={`px-4 py-2 rounded-md text-white ${canUpload ? "bg-indigo-600 hover:bg-indigo-700" : "bg-gray-400 cursor-not-allowed"}`}
                 onClick={handleUpload}
+                disabled={!canUpload}
+                className={`px-4 py-2 text-white rounded ${canUpload ? "bg-indigo-600 hover:bg-indigo-700" : "bg-gray-400 cursor-not-allowed"}`}
               >
                 Upload All
               </button>
+            </div>
+          </div>
+        )}
+
+        {selectedCharacter && existingImages.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+            <h2 className="text-lg font-medium text-gray-800 mb-4">Uploaded Images ({existingImages.length})</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {existingImages.map(image => (
+                <div key={image._id} className="relative group">
+                  <img src={`${IMG_URL}${image.imageUrl}`} alt="uploaded" className="w-full h-32 object-cover rounded" />
+                  <button
+                    onClick={() => handleDeleteImage(image._id)}
+                    className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}

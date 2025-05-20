@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { FaSearch, FaChevronDown } from "react-icons/fa"
+import { FaSearch, FaChevronDown, FaInstagram, FaPatreon } from "react-icons/fa"
 import Card from "./Card"
+import { Link } from "react-router-dom"
+import { RiTwitterXFill } from "react-icons/ri"
 
 const CardListingSection = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -241,9 +243,23 @@ const CardListingSection = () => {
                     </div>
                 )}
 
-                <div className="text-center my-10">
+                <div className="flex flex-col items-end gap-2 my-10">
+                    <div className="space-y-4">
 
-                    <h1 className="text-5xl font-semibold"> New content every day! </h1>
+                        <Link to="https://www.patreon.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                            <FaPatreon />
+                            Patreon
+                        </Link>             
+                        <Link to="https://x.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                            <RiTwitterXFill />
+                            Twitter
+                        </Link>
+                        <Link to="https://www.instagram.com/waifuscans418/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                            <FaInstagram />
+                            Instagram
+                        </Link>
+
+                    </div>
 
                 </div>
 

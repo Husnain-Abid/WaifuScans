@@ -3,16 +3,24 @@
 import { useState } from "react"
 import { FaUser, FaEye, FaEyeSlash, FaLock, FaPatreon } from "react-icons/fa"
 import { MdEmail } from "react-icons/md"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 import MainLayout from "../../layouts/MainLayout"
+import axios from "axios"
+import {BASE_URL} from "../../utils/apiURL"
 
 const Register = () => {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   })
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // for disabling button
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -27,10 +35,42 @@ const Register = () => {
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let validationErrors = {};
+
+    if (!agreeToPolicy) {
+      validationErrors.agreeToPolicy = "You must agree to the privacy policy";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      validationErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true); // disable button
+      setErrors({});
+
+      const response = await axios.post(`${BASE_URL}/auth/register`, formData);
+
+      toast.success(response.data.message);
+      navigate("/login");
+      
+    } catch (error) {
+      const message = error.response?.data?.message || "Registration failed";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
 
   return (
     <MainLayout>
@@ -124,6 +164,9 @@ const Register = () => {
                     {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+{errors.confirmPassword && (
+  <p className="text-red-500 text-sm mt-1 text-center">{errors.confirmPassword}</p>
+)}
 
                 {/* Privacy Policy */}
                 <div className="mb-6">
@@ -160,16 +203,26 @@ const Register = () => {
                       Please confirm that you agree to our privacy policy
                     </label>
                   </div>
+                  {errors.agreeToPolicy && (
+  <p className="text-red-500 text-sm mt-1 text-center">{errors.agreeToPolicy}</p>
+)}
+
                 </div>
 
                 {/* Register Button */}
+
+
                 <button
                   type="submit"
-                  className="w-full bg-[#b8b5ff] hover:bg-[#a5a1ff] text-[#1a1a2e] font-bold py-3 rounded-md mb-4 transition-colors text-sm sm:text-base md:text-lg"
-                  disabled={!agreeToPolicy}
+                  disabled={!agreeToPolicy || isSubmitting}
+                  className={`w-full ${!agreeToPolicy || isSubmitting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#b8b5ff] hover:bg-[#a5a1ff]"
+                    } text-[#1a1a2e] font-bold py-3 rounded-md mb-4 transition-colors text-sm sm:text-base md:text-lg`}
                 >
-                  Register
+                  {isSubmitting ? "Registering..." : "Register"}
                 </button>
+
 
                 <div className="text-center text-gray-400 mb-4 text-sm sm:text-base">
                   or

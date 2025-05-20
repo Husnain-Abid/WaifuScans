@@ -6,7 +6,7 @@ export default function AdminHeader() {
   return (
     <header className="flex items-center justify-between h-16 px-6 bg-white border-b">
       <div className="flex items-center">
-        <div className="relative">
+        {/* <div className="relative">
           <input
             type="text"
             placeholder="Search"
@@ -22,7 +22,7 @@ export default function AdminHeader() {
               />
             </svg>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center space-x-4">
         <button className="relative p-1 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none">

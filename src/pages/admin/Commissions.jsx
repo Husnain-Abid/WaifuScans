@@ -1,90 +1,180 @@
 "use client";
-import { useState } from "react";
-import { Plus, Trash2, Edit } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import AdminLayout from "../../layouts/AdminLayout";
+import axios from "axios";
+import { BASE_URL } from "../../utils/apiURL";
+import debounce from 'lodash.debounce';
+import { useCallback, useRef } from 'react';
+
 
 export default function CommissionTabsAdmin() {
-  const [tabs, setTabs] = useState({
-    guide: {
-      title: "Guide",
-      content: [
-        { label: "Understand the Process:", description: "How it works..." },
-      ],
-    },
-    request: {
-      title: "How to Request",
-      content: [],
-    },
-  });
+  const [tabs, setTabs] = useState({});
+  const [activeTabKey, setActiveTabKey] = useState("");
 
-  const [activeTabKey, setActiveTabKey] = useState(Object.keys(tabs)[0]);
+  const debounceSaveRef = useRef({});
+  const debounceTitleSaveRef = useRef({});
+
+  const debouncedSave = useCallback((tabId, updatedContent) => {
+    // Avoid creating a new debounce function each time
+    if (!debounceSaveRef.current[tabId]) {
+      debounceSaveRef.current[tabId] = debounce(async (contentToSave) => {
+        try {
+          const { data } = await axios.put(`${BASE_URL}/commission/${tabId}`, {
+            ...tabs[tabId],
+            content: contentToSave,
+          });
+          setTabs((prev) => ({
+            ...prev,
+            [tabId]: data,
+          }));
+        } catch (err) {
+          console.error("Debounced save failed:", err);
+        }
+      }, 600); // 600ms delay
+    }
+
+    debounceSaveRef.current[tabId](updatedContent);
+  }, [tabs]);
+
+
+  // 🔁 Load tabs on mount
+  useEffect(() => {
+    const fetchTabs = async () => {
+      try {
+        const { data } = await axios.get(`${BASE_URL}/commission`);
+        const mappedTabs = {};
+        data.forEach((tab) => {
+          mappedTabs[tab._id] = tab;
+        });
+        setTabs(mappedTabs);
+        if (Object.keys(mappedTabs).length > 0) {
+          setActiveTabKey(Object.keys(mappedTabs)[0]);
+        }
+      } catch (err) {
+        console.error("Error loading tabs:", err);
+      }
+    };
+    fetchTabs();
+  }, []);
 
   // ---- Tab Operations ----
-  const handleAddTab = () => {
-    const newKey = `tab${Date.now()}`;
-    setTabs((prev) => ({
-      ...prev,
-      [newKey]: {
+  const handleAddTab = async () => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/commission`, {
         title: "New Tab",
         content: [],
-      },
-    }));
-    setActiveTabKey(newKey);
+      });
+      setTabs((prev) => ({
+        ...prev,
+        [data._id]: data,
+      }));
+      setActiveTabKey(data._id);
+    } catch (err) {
+      console.error("Error creating tab:", err);
+    }
   };
 
-  const handleEditTabTitle = (newTitle) => {
-    setTabs((prev) => ({
-      ...prev,
-      [activeTabKey]: {
-        ...prev[activeTabKey],
-        title: newTitle,
-      },
-    }));
-  };
+const handleEditTabTitle = (newTitle) => {
+  const tab = tabs[activeTabKey];
 
-  const handleDeleteTab = () => {
-    const updatedTabs = { ...tabs };
-    delete updatedTabs[activeTabKey];
-    const newActive = Object.keys(updatedTabs)[0];
-    setTabs(updatedTabs);
-    setActiveTabKey(newActive || "");
+  // Update UI immediately
+  setTabs((prev) => ({
+    ...prev,
+    [tab._id]: {
+      ...tab,
+      title: newTitle,
+    },
+  }));
+
+  // Create a debounce function if not already cached
+  if (!debounceTitleSaveRef.current[tab._id]) {
+    debounceTitleSaveRef.current[tab._id] = debounce(async (titleToSave) => {
+      try {
+        const { data } = await axios.put(`${BASE_URL}/commission/${tab._id}`, {
+          ...tab,
+          title: titleToSave,
+        });
+        setTabs((prev) => ({
+          ...prev,
+          [tab._id]: data,
+        }));
+      } catch (err) {
+        console.error("Failed to save debounced title:", err);
+      }
+    }, 600); // delay in ms
+  }
+
+  // Call debounced save
+  debounceTitleSaveRef.current[tab._id](newTitle);
+};
+
+
+  const handleDeleteTab = async () => {
+    try {
+      await axios.delete(`${BASE_URL}/commission/${activeTabKey}`);
+      const updatedTabs = { ...tabs };
+      delete updatedTabs[activeTabKey];
+      setTabs(updatedTabs);
+      setActiveTabKey(Object.keys(updatedTabs)[0] || "");
+    } catch (err) {
+      console.error("Failed to delete tab:", err);
+    }
   };
 
   // ---- Entry Operations ----
-  const handleAddEntry = () => {
-    setTabs((prev) => ({
-      ...prev,
-      [activeTabKey]: {
-        ...prev[activeTabKey],
-        content: [
-          ...prev[activeTabKey].content,
-          { label: "New Label", description: "New description..." },
-        ],
-      },
-    }));
+  const handleAddEntry = async () => {
+    const tab = tabs[activeTabKey];
+    const updatedContent = [
+      ...tab.content,
+      { label: "New Label", description: "New description..." },
+    ];
+    try {
+      const { data } = await axios.put(`${BASE_URL}/commission/${tab._id}`, {
+        ...tab,
+        content: updatedContent,
+      });
+      setTabs((prev) => ({
+        ...prev,
+        [tab._id]: data,
+      }));
+    } catch (err) {
+      console.error("Failed to add entry:", err);
+    }
   };
 
-  const handleEditEntry = (index, field, value) => {
-    const updatedEntries = [...tabs[activeTabKey].content];
-    updatedEntries[index][field] = value;
-    setTabs((prev) => ({
-      ...prev,
-      [activeTabKey]: {
-        ...prev[activeTabKey],
-        content: updatedEntries,
-      },
-    }));
-  };
+const handleEditEntry = (index, field, value) => {
+  const tab = tabs[activeTabKey];
+  const updatedContent = [...tab.content];
+  updatedContent[index][field] = value;
 
-  const handleDeleteEntry = (index) => {
-    const filtered = tabs[activeTabKey].content.filter((_, i) => i !== index);
-    setTabs((prev) => ({
-      ...prev,
-      [activeTabKey]: {
-        ...prev[activeTabKey],
-        content: filtered,
-      },
-    }));
+  setTabs((prev) => ({
+    ...prev,
+    [activeTabKey]: {
+      ...tab,
+      content: updatedContent,
+    },
+  }));
+
+  debouncedSave(activeTabKey, updatedContent);
+};
+
+
+  const handleDeleteEntry = async (index) => {
+    const tab = tabs[activeTabKey];
+    const updatedContent = tab.content.filter((_, i) => i !== index);
+    try {
+      const { data } = await axios.put(`${BASE_URL}/commission/${tab._id}`, {
+        ...tab,
+        content: updatedContent,
+      });
+      setTabs((prev) => ({
+        ...prev,
+        [tab._id]: data,
+      }));
+    } catch (err) {
+      console.error("Failed to delete entry:", err);
+    }
   };
 
   return (
@@ -107,27 +197,26 @@ export default function CommissionTabsAdmin() {
             <button
               key={key}
               onClick={() => setActiveTabKey(key)}
-              className={`px-4 py-2 rounded ${
-                activeTabKey === key
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-800"
-              }`}
+              className={`px-4 py-2 rounded ${activeTabKey === key
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-800"
+                }`}
             >
               {tabs[key].title}
             </button>
           ))}
         </div>
 
-        {/* Active Tab Editor */}
+        {/* Tab Editor */}
         {activeTabKey && tabs[activeTabKey] && (
           <div className="bg-white p-6 rounded shadow">
-            {/* Edit Tab Title */}
             <div className="flex justify-between items-center mb-4">
               <input
                 value={tabs[activeTabKey].title}
                 onChange={(e) => handleEditTabTitle(e.target.value)}
                 className="text-xl font-semibold border-b-2 p-1 w-full mr-4"
               />
+
               <button
                 onClick={handleDeleteTab}
                 className="text-red-600 hover:underline"
@@ -135,9 +224,9 @@ export default function CommissionTabsAdmin() {
                 <Trash2 className="w-4 h-4 inline-block mr-1" />
                 Delete Tab
               </button>
+
             </div>
 
-            {/* Entry List */}
             <div className="space-y-4">
               {tabs[activeTabKey].content.map((entry, i) => (
                 <div key={i} className="border p-4 rounded bg-gray-50">
@@ -177,6 +266,8 @@ export default function CommissionTabsAdmin() {
             </button>
           </div>
         )}
+
+
       </div>
     </AdminLayout>
   );

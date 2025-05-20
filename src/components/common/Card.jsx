@@ -1,11 +1,15 @@
-import React from 'react'
-import { FaHeart} from "react-icons/fa"
+import React, { useState } from 'react'
+import { FaHeart } from "react-icons/fa"
 import { FaMars, FaVenus, FaTransgender } from "react-icons/fa"  // Import gender-related icons
 import { BiImages } from "react-icons/bi";
 import { useNavigate } from "react-router-dom"
+import GalleryModal from './GalleryModal';
 
 
 export default function Card({ character }) {
+
+    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
     const navigate = useNavigate();
 
     // Conditional rendering of the heart icon based on gender
@@ -19,39 +23,67 @@ export default function Card({ character }) {
         }
     };
 
-    
+
+    // const handleCardClick = () => {
+    //     navigate(`/gallery/${character.id}`);
+    // };
+
     const handleCardClick = () => {
-        navigate(`/gallery/${character.id}`);
-    };
-
+        setIsGalleryOpen(true)
+    }
     return (
-        <div key={character.id}
-        // onClick={handleCardClick}
-        className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-            <div className="relative">
-                <img
-                    src={character.image || "/placeholder.svg"}
-                    alt={character.name}
-                    className="w-full h-64 object-cover object-center"
-                />
-                <div className="absolute top-2 left-2 bg-gray-200 rounded-full p-1">
-                    {renderGenderIcon(character.gender)}  {/* Gender-specific icon */}
-                </div>
-                <div className="absolute top-2 right-2 bg-gray-800/80 rounded-md px-2 py-1 flex items-center">
-                    <BiImages className="text-white mr-1" />
-                    <span className="text-sm">{character.imagesCount}</span>
+        <>
+
+
+            <div
+                key={character.id}
+                onClick={handleCardClick}
+                className="aspect-[9/12] md:aspect-[9/14] bg-gray-800/20 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
+            >
+                <div className="flex flex-col h-full">
+                    {/* Image container - 75% height */}
+                    <div className="relative h-4/5">
+                        <img
+                            src={character.image || "/placeholder.svg"}
+                            alt={character.name}
+                            className="w-full h-full object-cover object-center"
+                        />
+                        <div className="absolute top-2 right-2 bg-gray-800/80 rounded-md px-2 py-1 flex items-center">
+                            <BiImages className="text-white mr-1" />
+                            <span className="text-sm">{character.imagesCount}</span>
+                        </div>
+                    </div>
+
+                    {/* Text content - 25% height */}
+                    <div className="p-4 h-1/5">
+                        <div className="flex justify-center items-start mb-2">
+                            <h3 className="text-2xl font-bold">{character.name}</h3>
+                        </div>
+
+
+
+                    </div>
                 </div>
             </div>
 
-            <div className="p-4">
-                <div className="flex justify-center items-start mb-2">
-                    <h3 className="text-xl font-bold ">{character.name}</h3>
-                    {/* <div className="flex items-center">
-                        <FaHeart className="text-red-500 mr-1" />
-                        <span className="text-sm">{character.likes}</span>
-                    </div> */}
-                </div>
-            </div>
-        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            {/* Gallery Modal */}
+            <GalleryModal isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} character={character} />
+        </>
+
+
     )
 }

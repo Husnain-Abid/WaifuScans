@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import axios from "axios"; // Import Axios
+import  { BASE_URL, IMG_URL } from "../../utils/apiURL"
 
 const CharacterFormModal = ({ isOpen, onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState({
     name: "",
     gender: "Male",
     tags: "",
-    coverImage: "",
+    coverImageFile: null, // file object
+    coverImagePreview: "", // for previewing the image
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        name: initialData.name || "",
-        gender: initialData.gender || "Male",
-        tags: (initialData.tags || []).join(", "),
-        coverImage: initialData.coverImage || "",
-      });
-    }
-  }, [initialData]);
+
+  const [loading, setLoading] = useState(false); // Loading state for image upload
+
+useEffect(() => {
+  if (initialData) {
+    // Edit mode
+    setFormData({
+      name: initialData.name || "",
+      gender: initialData.gender || "Male",
+      tags: (initialData.tags || []).join(", "),
+      coverImageFile: null,
+      coverImagePreview: initialData.coverImage || "",
+    });
+  } else {
+    // Add mode
+    resetForm();
+  }
+}, [initialData, isOpen]); // Also depend on isOpen
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,14 +41,61 @@ const CharacterFormModal = ({ isOpen, onClose, onSave, initialData }) => {
     }));
   };
 
-  const handleSubmit = () => {
-    const newChar = {
-      ...formData,
-      tags: formData.tags.split(",").map((tag) => tag.trim()),
-    };
-    onSave(newChar);
-    onClose();
+  // Handle file upload to Cloudinary (or other image hosting service)
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        coverImageFile: file,
+        coverImagePreview: URL.createObjectURL(file),
+      }));
+    }
   };
+
+
+  const handleSubmit = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("gender", formData.gender);
+    formDataToSend.append("tags", formData.tags);
+    if (formData.coverImageFile) {
+      formDataToSend.append("coverImage", formData.coverImageFile); // This matches your Multer key
+    }
+
+    try {
+      const url = initialData
+        ? `${BASE_URL}/characters/${initialData._id}`
+        : `${BASE_URL}/characters`;
+
+      const response = initialData
+        ? await axios.put(url, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        : await axios.post(url, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+      onSave(response.data);
+      onClose();
+      resetForm();
+    } catch (error) {
+      console.error("Error saving character:", error);
+    }
+  };
+
+
+  // Reset form data
+const resetForm = () => {
+  setFormData({
+    name: "",
+    gender: "Male",
+    tags: "",
+    coverImageFile: null,
+    coverImagePreview: "",
+  });
+};
+
 
   if (!isOpen) return null;
 
@@ -65,7 +125,7 @@ const CharacterFormModal = ({ isOpen, onClose, onSave, initialData }) => {
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Unknown">Other</option>
+            <option value="Other">Other</option>
           </select>
           <input
             type="text"
@@ -75,14 +135,28 @@ const CharacterFormModal = ({ isOpen, onClose, onSave, initialData }) => {
             value={formData.tags}
             onChange={handleChange}
           />
-          <input
-            type="text"
-            name="coverImage"
-            placeholder="Cover Image URL"
-            className="w-full border px-3 py-2 rounded"
-            value={formData.coverImage}
-            onChange={handleChange}
-          />
+
+          {/* Image Upload Input */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">Cover Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full border px-3 py-2 rounded"
+              onChange={handleFileChange}
+            />
+            {formData.coverImagePreview && (
+              <div className="mt-2">
+                <img
+                  src={formData.coverImagePreview}
+                  alt="Cover Preview"
+                  className="max-w-full h-auto rounded-md"
+                />
+              </div>
+            )}
+          </div>
+
+
         </div>
 
         <div className="flex justify-end mt-6 space-x-3">

@@ -1,33 +1,93 @@
-import React, { useState } from 'react'
-import logo from "../../assets/logo.jpg"
-import { FaInstagram } from "react-icons/fa"
-import { FaPatreon } from "react-icons/fa6"
-import { RiAccountCircle2Line, RiLogoutCircleRLine, RiTwitterXFill } from "react-icons/ri"
+import React, { useEffect, useState } from 'react'
+import { RiAccountCircle2Line, RiLogoutCircleRLine } from "react-icons/ri"
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '../../features/auth/authSlice'
+import axios from 'axios'
+import { BASE_URL } from '../../utils/apiURL'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [user, setUser] = useState(null) // null = not logged in
+  const [settings, setSettings] = useState(null)
+
+  const user = useSelector((state) => state.auth.user)
+  const dispatch = useDispatch()
 
   const handleLogout = () => {
-    console.log("logout")
-    setUser(null) // Simulate logout
+    dispatch(logout())
   }
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/settings`) // adjust path if needed
+        setSettings(res.data)
+      } catch (error) {
+        console.error("Failed to fetch website settings:", error)
+      }
+    }
+
+    fetchSettings()
+  }, [])
+
+
+  console.log(user);
+
 
   return (
     <nav className="bg-black text-white py-3 px-4 flex items-center justify-between">
       <div className='flex gap-20'>
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/">
-            <img src={logo} alt="logo" className='w-40' />
-          </Link>
+
+        <div className='flex items-center gap-2'>
+          {/* user */}
+
+          {user &&
+            <div className="flex items-center">
+              <Link to="/">
+                <img
+                  src={user.profile || "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"}
+                  alt="profile" className='w-8 rounded-full border-2' />
+              </Link>
+            </div>
+          }
+
+
+
+
+
+
+
+
+          {/* Logo  */}
+          <div className="rounded-lg cursor-pointer">
+            <Link to="/" className="font-poppins text-2xl font-bold text-center ">
+              <span className="text-white/70">Waifu</span>
+              <span className="bg-yellow-600 text-black rounded ">Scans</span>
+              <span className="text-white/70">418</span>
+            </Link>
+          </div>
         </div>
+
+
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center space-x-8 mx-auto">
           <Link to="/" className="flex items-center">Home</Link>
           <Link to="/commissions" className="flex items-center">Commissions</Link>
+
+          <Link to={settings?.patreon || "https://www.patreon.com/WaifuScans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+            {/* <FaPatreon /> */}
+            Patreon
+          </Link>
+          <Link to={settings?.twitter || "https://x.com/WaifuScans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+            {/* <RiTwitterXFill /> */}
+            Twitter
+          </Link>
+          <Link to={settings?.instagram || "https://www.instagram.com/waifuscans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+            {/* <FaInstagram /> */}
+            Instagram
+          </Link>
+
         </div>
       </div>
 
@@ -40,10 +100,24 @@ export default function Navbar() {
 
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-black z-50 md:hidden">
+        <div className="absolute top-14 left-0 right-0 bg-black z-50 md:hidden">
           <div className="flex flex-col items-center py-4 space-y-4">
             <Link to="/" className="flex items-center">Home</Link>
             <Link to="/commissions" className="flex items-center">Commissions</Link>
+
+            <Link to={settings?.patreon || "https://www.patreon.com/WaifuScans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              {/* <FaPatreon /> */}
+              Patreon
+            </Link>
+            <Link to={settings?.twitter || "https://x.com/WaifuScans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              {/* <RiTwitterXFill /> */}
+              Twitter
+            </Link>
+            <Link to={settings?.instagram || "https://www.instagram.com/waifuscans418"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              {/* <FaInstagram /> */}
+              Instagram
+            </Link>
+
 
             <div className="flex items-center space-x-4 pt-2">
               {!user ? (
@@ -65,18 +139,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile Social Icons */}
-            <div className="flex space-x-4 pt-2">
-              <a href="https://x.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="text-xl">
-                <RiTwitterXFill />
-              </a>
-              <a href="https://www.instagram.com/waifuscans418/" target="_blank" rel="noopener noreferrer" className="text-xl">
-                <FaInstagram />
-              </a>
-              <a href="https://www.patreon.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="text-xl">
-                <FaPatreon />
-              </a>
-            </div>
+
           </div>
         </div>
       )}
@@ -103,7 +166,7 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="flex items-center space-x-4">
+        {/* <div className="flex items-center space-x-4">
           <a href="https://x.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="text-xl">
             <RiTwitterXFill />
           </a>
@@ -113,7 +176,7 @@ export default function Navbar() {
           <a href="https://www.patreon.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="text-xl">
             <FaPatreon />
           </a>
-        </div>
+        </div> */}
       </div>
     </nav>
   )

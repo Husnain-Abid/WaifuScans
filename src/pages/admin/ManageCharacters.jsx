@@ -1,50 +1,82 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import CharacterFormModal from "../../components/admin/CharacterFormModal";
+import axios from "axios"; // Import axios
+import {BASE_URL} from "../../utils/apiURL";
 
 const ManageCharacters = () => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
-
-  const [characters, setCharacters] = useState([
-    {
-      id: 1,
-      name: "Goku",
-      gender: "Male",
-      powerLevel: "8,500+",
-      tags: ["Saiyan", "Z Fighter", "Hero"],
-      imagesCount: 4,
-    },
-    {
-      id: 2,
-      name: "Vegeta",
-      gender: "Male",
-      powerLevel: "8,000+",
-      tags: ["Saiyan", "Prince", "Z Fighter"],
-      imagesCount: 4,
-    },
-    {
-      id: 3,
-      name: "Bulma",
-      gender: "Female",
-      powerLevel: "Genius",
-      tags: ["Human", "Scientist"],
-      imagesCount: 3,
-    },
-  ]);
-
+  const [characters, setCharacters] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch characters from API
+  const fetchCharacters = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/characters`); // Adjust API endpoint as needed
+      setCharacters(response.data);
+    } catch (error) {
+      console.error("Error fetching characters:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCharacters();
+  }, []);
 
   const filteredCharacters = characters.filter((char) =>
     char.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDelete = (id) => {
-    setCharacters(characters.filter((char) => char.id !== id));
+  // Handle deleting a character
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/characters/${id}`);
+      setCharacters(characters.filter((char) => char._id !== id)); // Update state after deletion
+    } catch (error) {
+      console.error("Error deleting character:", error);
+    }
+  };
+
+  const handleSaveCharacter = async (data) => {
+    if (editData) {
+      // Optimistically update the state
+      setCharacters((prev) =>
+        prev.map((char) =>
+          char._id === editData._id ? { ...char, ...data } : char
+        )
+      );
+
+      try {
+        const response = await axios.put(`${BASE_URL}/characters/${editData._id}`, data);
+        // Update the character with the response data in case there are any server-side changes
+        setCharacters((prev) =>
+          prev.map((char) =>
+            char._id === editData._id ? { ...char, ...response.data } : char
+          )
+        );
+      } catch (error) {
+        console.error("Error updating character:", error);
+      }
+    } else {
+      // Optimistically add the new character to the state
+      setCharacters((prev) => [...prev, data]);
+
+      try {
+        const response = await axios.post(`${BASE_URL}/characters`, data);
+        // Update the new character with the response data if necessary
+        setCharacters((prev) =>
+          prev.map((char) =>
+            char._id === response.data._id ? { ...char, ...response.data } : char
+          )
+        );
+      } catch (error) {
+        console.error("Error adding character:", error);
+      }
+    }
   };
 
 
@@ -58,26 +90,16 @@ const ManageCharacters = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveCharacter = (data) => {
-    if (editData) {
-      setCharacters((prev) =>
-        prev.map((char) => (char.id === editData.id ? { ...char, ...data } : char))
-      );
-    } else {
-      setCharacters((prev) => [...prev, { id: Date.now(), ...data, imagesCount: 0 }]);
-    }
-  };
-
-
-
-
   return (
     <>
       <AdminLayout>
         <div>
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Manage Characters</h1>
-            <button className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" onClick={handleAdd}>
+            <button
+              className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              onClick={handleAdd}
+            >
               <Plus className="w-4 h-4 mr-2" />
               Add New Character
             </button>
@@ -112,7 +134,7 @@ const ManageCharacters = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredCharacters.map((char) => (
-                    <tr key={char.id}>
+                    <tr key={char._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{char.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{char.gender}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -121,10 +143,16 @@ const ManageCharacters = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{char.imagesCount}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleEdit(char)} >
+                          <button
+                            className="text-indigo-600 hover:text-indigo-900"
+                            onClick={() => handleEdit(char)}
+                          >
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button className="text-red-600 hover:text-red-900" onClick={() => handleDelete(char.id)}>
+                          <button
+                            className="text-red-600 hover:text-red-900"
+                            onClick={() => handleDelete(char._id)}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -143,23 +171,14 @@ const ManageCharacters = () => {
           </div>
         </div>
 
-
-
-
+        <CharacterFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveCharacter}
+          initialData={editData}
+        />
       </AdminLayout>
-
-
-      <CharacterFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveCharacter}
-        initialData={editData}
-      />
     </>
-
-
-
-
   );
 };
 

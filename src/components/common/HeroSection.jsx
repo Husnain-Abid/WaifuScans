@@ -1,8 +1,28 @@
 import { Link } from "react-router-dom"
 import { RiTwitterXFill } from "react-icons/ri";
 import { GrInstagram } from "react-icons/gr";
+import { useEffect, useState } from "react";
+import { BASE_URL, IMG_URL } from "../../utils/apiURL";
+import axios from "axios";
 
 const HeroSection = () => {
+
+    const [settings, setSettings] = useState(null)
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await axios.get(`${BASE_URL}/settings`) // adjust path if needed
+                setSettings(res.data)
+            } catch (error) {
+                console.error("Failed to fetch website settings:", error)
+            }
+        }
+        fetchSettings()
+    }, [])
+
+    console.log(settings);
+
     return (
         <div className="relative w-full bg-black text-white overflow-hidden">
             {/* Hero Banner */}
@@ -10,7 +30,7 @@ const HeroSection = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: "url('https://geekculture.co/wp-content/uploads/2023/09/jump-assemble-mobile-moba.jpg')",
+                        backgroundImage: `url('${settings?.banner ? IMG_URL + settings.banner : "https://geekculture.co/wp-content/uploads/2023/09/jump-assemble-mobile-moba.jpg"}')`,
                         backgroundPosition: "center 30%",
                         filter: "brightness(0.7)",
                     }}
@@ -33,30 +53,20 @@ const HeroSection = () => {
 
             {/* Profile section */}
             <div className="bg-black py-8 px-4">
-                <div className="container mx-auto flex flex-col items-center">
-                    {/* Profile image */}
-                    <div className="relative -mt-20 z-20">
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5dksLlvWydTpCurFMiA0nCh4giG9CpRvp6Q&s"
-                            alt="Goku Profile"
-                            className="w-24 h-24 rounded-full border-4 border-yellow-500 object-cover"
-                        />
-                    </div>
+                <div className="container mx-auto flex flex-col items-center font-inter">
+
 
                     {/* Profile info */}
-                    <h2 className="text-2xl md:text-3xl font-bold mt-4">WaifuScans418</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold mt-4">Welcome</h2>
 
+                    {/* websote description */}
+                    <h2 className="text-xl text-center md:text-2xl font-bold mt-4">{settings?.description || "Login to Patreon to unlock the gallery"}</h2>
 
-                    {/* Social icons */}
-                    <div className="flex space-x-6 mt-6">
-                        <Link to="https://x.com/WaifuScans418" target="_blank" className="text-gray-400 hover:text-white">
-                            <RiTwitterXFill size="25" />
-                        </Link>
-                        <Link to="https://www.instagram.com/waifuscans418/" target="_blank" className="text-gray-400 hover:text-white">
-                            <GrInstagram size="25" />
+                    {/* CTA Button */}
+                    <button className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-8 rounded-md transition-all duration-300 transform hover:scale-105">
+                        Patreon Login
+                    </button>
 
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>

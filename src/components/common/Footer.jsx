@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from "../../assets/logo.jpg"
+import profile from "../../assets/profile.jpg"
 import { FaInstagram, FaPatreon } from 'react-icons/fa'
 import { RiTwitterXFill } from "react-icons/ri"
 import { Link } from 'react-router-dom'
@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="container mx-auto border-t border-gray-600 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex items-center">
-          <img src={logo} alt="logo" className="w-40" />
+          <img src={profile} alt="logo" className="w-40" />
         </div>
 
         {/* Social Media Links */}
