@@ -172,7 +172,7 @@ export default function GalleryPage() {
                         key={index}
                         src={url}
                         alt={`${character.name} ${index + 1}`}
-                        className="w-full h-48 object-cover rounded-lg"
+                        className="w-full object-cover rounded-lg"
                     />
                 ))}
             </div>

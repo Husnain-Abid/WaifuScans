@@ -1,58 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, Filter, Trash2, ShieldOff } from "lucide-react"
 import AdminLayout from "../../layouts/AdminLayout"
+import axios from "axios"
+import { BASE_URL } from "../../utils/apiURL"
 
 const ManageUsers = () => {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      status: "Active",
-      joinDate: "2023-01-15",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      status: "Active",
-      joinDate: "2023-02-20",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 3,
-      name: "Robert Johnson",
-      email: "robert.j@example.com",
-      status: "Blocked",
-      joinDate: "2023-03-10",
-      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-  ])
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("All")
 
-  const handleDelete = (id) => {
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data } = await axios.get(`${BASE_URL}/auth`);
+        setUsers(data);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const handleDelete = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      setUsers(users.filter((user) => user.id !== id))
+      try {
+        await axios.delete(`/api/users/${userId}`);
+        setUsers(users.filter((user) => user._id !== userId));
+      } catch (error) {
+        console.error("Failed to delete user:", error);
+      }
     }
-  }
-
-  const handleBlock = (id, type = "Temporary") => {
-    const confirmMsg =
-      type === "Permanent"
-        ? "Are you sure you want to permanently block this user?"
-        : "Are you sure you want to temporarily block this user?"
-    if (!window.confirm(confirmMsg)) return
-
-    const newStatus = type === "Permanent" ? "Permanently Blocked" : "Blocked"
-    setUsers((prev) =>
-      prev.map((user) => (user.id === id ? { ...user, status: newStatus } : user))
-    )
-  }
+  };
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -107,8 +88,12 @@ const ManageUsers = () => {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Package</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expires At</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Join Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+
+
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -125,34 +110,22 @@ const ManageUsers = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.status === "Active"
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === "Active"
                             ? "bg-green-100 text-green-800"
                             : user.status === "Blocked"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
                       >
                         {user.status}
                       </span>
                     </td>
+                    <td>{user.subscription?.packageType || "N/A"}</td>
+                    <td>{user.subscription?.expiresAt ? new Date(user.subscription.expiresAt).toLocaleDateString() : "N/A"}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.joinDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-3">
-                        <button
-                          className="text-yellow-600 hover:text-yellow-800"
-                          onClick={() => handleBlock(user.id, "Temporary")}
-                          title="Temporary Block"
-                        >
-                          <ShieldOff className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="text-red-600 hover:text-red-800"
-                          onClick={() => handleBlock(user.id, "Permanent")}
-                          title="Permanent Block"
-                        >
-                          <ShieldOff className="w-4 h-4" />
-                        </button>
+
                         <button className="text-gray-600 hover:text-gray-900" onClick={() => handleDelete(user.id)}>
                           <Trash2 className="w-4 h-4" />
                         </button>

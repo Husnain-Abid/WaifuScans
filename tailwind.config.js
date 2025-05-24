@@ -12,6 +12,25 @@ module.exports = {
 
     extend: {
 
+      animation: {
+        floating: 'floating 2.6s infinite linear',
+      },
+      keyframes: {
+        floating: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(10px)' },
+        },
+      },
+      transformOrigin: {
+        '3d': '50% 50% 0',
+      },
+      rotate: {
+        'y-180': 'rotateY(180deg)',
+      },
+      perspective: {
+        '1000': '1000px',
+      },
+
 
       colors: {
         customRed: "#E23744", // Add a custom name for your color

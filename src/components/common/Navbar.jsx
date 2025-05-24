@@ -35,7 +35,7 @@ export default function Navbar() {
 
 
   return (
-    <nav className="bg-black text-white py-3 px-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-[#0a0f27]/70 backdrop-blur-md text-white py-4 px-4 flex items-center justify-between">
       <div className='flex gap-20'>
 
         <div className='flex items-center gap-2'>
@@ -53,14 +53,9 @@ export default function Navbar() {
 
 
 
-
-
-
-
-
           {/* Logo  */}
           <div className="rounded-lg cursor-pointer">
-            <Link to="/" className="font-poppins text-2xl font-bold text-center ">
+            <Link to="/" className="font-poppins text-3xl font-bold text-center ">
               <span className="text-white/70">Waifu</span>
               <span className="bg-yellow-600 text-black rounded ">Scans</span>
               <span className="text-white/70">418</span>
@@ -71,7 +66,7 @@ export default function Navbar() {
 
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8 mx-auto">
+        <div className="hidden md:flex items-center text-lg space-x-8 mx-auto">
           <Link to="/" className="flex items-center">Home</Link>
           <Link to="/commissions" className="flex items-center">Commissions</Link>
 
@@ -145,7 +140,7 @@ export default function Navbar() {
       )}
 
       {/* Desktop User & Social Icons */}
-      <div className="hidden md:flex items-center space-x-10">
+      <div className="hidden md:flex items-center space-x-10 text-lg">
         <div className="flex items-center space-x-6 mr-20">
           {!user ? (
             <>

@@ -33,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/gallery/:id" element={<GalleryPage />} />
+        <Route path="/gallery-page/:id" element={<GalleryPage />} />
 
 
 

@@ -24,9 +24,9 @@ const CardListingSection = () => {
             imagesCount: 4,
             images: [
                 "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
-                "https://wallpapers.com/images/hd/goku-in-ultra-instinct-form-dbz-jbv9wggf2wx9yp7i.jpg",
-                "https://staticg.sportskeeda.com/editor/2022/12/0f33c-16701663224265-1920.jpg",
-                "https://i.pinimg.com/originals/8a/7e/f7/8a7ef7d6c6b5d7b93a29642d1e6634fa.jpg"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -39,10 +39,10 @@ const CardListingSection = () => {
             likes: 187,
             imagesCount: 4,
             images: [
-                "https://images7.alphacoders.com/673/673499.jpg",
-                "https://wallpapers.com/images/hd/vegeta-final-flash-8k-dbz-qbb7keu32w25z9bb.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/vegeta.jpg",
-                "https://i.pinimg.com/originals/bb/98/f1/bb98f194efbbcf7f65df03ecb11d8c4c.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -55,9 +55,10 @@ const CardListingSection = () => {
             likes: 167,
             imagesCount: 3,
             images: [
-                "https://c4.wallpaperflare.com/wallpaper/514/74/570/dragon-ball-dragon-ball-z-gohan-dragon-ball-super-saiyan-2-hd-wallpaper-preview.jpg",
-                "https://wallpapers.com/images/featured/gohan-ultra-instinct-3pc5j6cg9vuzcg7k.jpg",
-                "https://www.animeexplained.com/wp-content/uploads/2023/02/Gohan-Beast-Transformation.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -70,9 +71,10 @@ const CardListingSection = () => {
             likes: 131,
             imagesCount: 3,
             images: [
-                "https://dragonball.guru/wp-content/uploads/2021/03/piccolo-scared.jpg",
-                "https://wallpapers.com/images/hd/piccolo-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/piccolo.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -85,9 +87,10 @@ const CardListingSection = () => {
             likes: 114,
             imagesCount: 3,
             images: [
-                "https://c4.wallpaperflare.com/wallpaper/127/553/144/dragon-ball-z-trunks-character-blue-eyes-saiyan-wallpaper-preview.jpg",
-                "https://wallpapers.com/images/hd/trunks-super-saiyan-2-dbz-8k-wallpaper-7g7w0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/trunks.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -100,9 +103,10 @@ const CardListingSection = () => {
             likes: 137,
             imagesCount: 3,
             images: [
-                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
-                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -115,9 +119,10 @@ const CardListingSection = () => {
             likes: 92,
             imagesCount: 3,
             images: [
-                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
-                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -130,9 +135,10 @@ const CardListingSection = () => {
             likes: 103,
             imagesCount: 3,
             images: [
-                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
-                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -145,9 +151,10 @@ const CardListingSection = () => {
             likes: 156,
             imagesCount: 3,
             images: [
-                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
-                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
         {
@@ -160,20 +167,19 @@ const CardListingSection = () => {
             likes: 123,
             imagesCount: 3,
             images: [
-                "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/Bulma-DBS.jpg",
-                "https://wallpapers.com/images/hd/bulma-dragon-ball-z-8k-wallpaper-4w9x0zq6qz6x0b7i.jpg",
-                "https://static1.cbrimages.com/wordpress/wp-content/uploads/2023/09/bulma.jpg"
+                "https://c4.wallpaperflare.com/wallpaper/655/531/669/4k-ultra-instinct-goku-8k-wallpaper-preview.jpg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpoYmhWidnxTqW85NzR2kOUK7VAnm4gjcvmf8A48-cArOv95UXnPNxwv9OaTYN-xThZ1w&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzieU9g1oEYk4_-E9gLeDBWs84CYfZ_StTC3HiihCtN5W6RnH42YnGliIom37DopzjUm8&usqp=CAU",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_pCSQ4vYD_cI01Nwd7dtlUFPFJ1yK2DwTlu9jkLZwCy-lx9rAp1rYb-dlnsRF5Gk5tTM&usqp=CAU"
             ],
         },
     ];
 
 
-    const allTags = ["All Characters", "Saiyan", "Human", "Villain", "Z Fighter", "Alien"]
 
     const filteredCharacters = characters.filter((character) => {
         const matchesSearch = character.name.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesTag = selectedTag === "All Characters" || character.tags.includes(selectedTag)
-        return matchesSearch && matchesTag
+        return matchesSearch
     })
 
     const handleLoadMore = () => {
@@ -181,7 +187,7 @@ const CardListingSection = () => {
     }
 
     return (
-        <div className="bg-gray-900 text-white py-8 px-4 min-h-screen">
+        <div className=" bg-gray-950 text-white py-8 px-4 min-h-screen">
             <div className="container mx-auto">
                 {/* Search and Filter Section */}
                 <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -196,32 +202,7 @@ const CardListingSection = () => {
                         <FaSearch className="absolute left-3 top-3 text-gray-500" />
                     </div>
 
-                    <div className="relative">
-                        <button
-                            className="bg-blue-700 hover:bg-blue-600 text-white py-2 px-4 rounded-md flex items-center justify-between min-w-[200px]"
-                            onClick={() => setIsTagsOpen(!isTagsOpen)}
-                        >
-                            <span>{selectedTag}</span>
-                            <FaChevronDown className={`ml-2 transition-transform ${isTagsOpen ? "rotate-180" : ""}`} />
-                        </button>
 
-                        {isTagsOpen && (
-                            <div className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg">
-                                {allTags.map((tag) => (
-                                    <div
-                                        key={tag}
-                                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
-                                        onClick={() => {
-                                            setSelectedTag(tag)
-                                            setIsTagsOpen(false)
-                                        }}
-                                    >
-                                        {tag}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 {/* Card Grid */}
@@ -236,7 +217,7 @@ const CardListingSection = () => {
                     <div className="text-center mt-6">
                         <button
                             onClick={handleLoadMore}
-                            className="bg-blue-700 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                            className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-md"
                         >
                             Load More
                         </button>
@@ -249,7 +230,7 @@ const CardListingSection = () => {
                         <Link to="https://www.patreon.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
                             <FaPatreon />
                             Patreon
-                        </Link>             
+                        </Link>
                         <Link to="https://x.com/WaifuScans418" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
                             <RiTwitterXFill />
                             Twitter
